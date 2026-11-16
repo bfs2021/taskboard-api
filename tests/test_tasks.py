@@ -62,6 +62,22 @@ def test_list_filter_done_true():
     assert ids == [2]
 
 
+def test_list_filter_done_false():
+    make(1)
+    make(2)
+    client.patch("/tasks/2", json={"done": True})
+    ids = [t["id"] for t in client.get("/tasks", params={"done": "false"}).json()]
+    assert ids == [1]
+
+
+def test_list_without_done_returns_all():
+    make(1)
+    make(2)
+    client.patch("/tasks/2", json={"done": True})
+    ids = [t["id"] for t in client.get("/tasks").json()]
+    assert ids == [1, 2]
+
+
 def test_list_filter_priority():
     make(1, priority="high")
     make(2, priority="low")
